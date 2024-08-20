@@ -1,0 +1,31 @@
+---
+services:
+  qbittorrent:
+    # image: lscr.io/linuxserver/qbittorrent:latest
+    build:
+      context: .
+    # cap_add:
+    #   - NET_ADMIN
+    #   - SYS_MODULE
+    # user: root
+    # privileged: true
+    container_name: qbittorrent-wg
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - WEBUI_PORT=8080
+      - TORRENTING_PORT=6881
+      - CLIENT_PRIVATE_KEY=<insert-client-private-key>
+      - SERVER_PUBKEY=<insert-server-public-key>
+      - ENDPOINT=<insert-endpoint>
+    volumes:
+      - ./qbittorrent/appdata:/config
+      - ./downloads:/downloads #optional
+    ports:
+      - 8080:8080
+      - 6881:6881
+      - 6881:6881/udp
+    restart: unless-stopped
+
+

@@ -17,6 +17,9 @@ ENV HOME="/config" \
 XDG_CONFIG_HOME="/config" \
 XDG_DATA_HOME="/config"
 
+# add local files
+COPY root/ /
+
 # install runtime packages and qbitorrent-cli
 RUN \
   echo "**** install packages ****" && \
@@ -25,6 +28,8 @@ RUN \
     p7zip \
     python3 \
     qt6-qtbase-sqlite && \
+  apk add -U wireguard-tools iptables ip6tables openresolv && \
+  chmod +x /runentry.sh && \
   if [ -z ${QBITTORRENT_VERSION+x} ]; then \
     QBITTORRENT_VERSION=$(curl -sL "http://dl-cdn.alpinelinux.org/alpine/edge/community/x86_64/APKINDEX.tar.gz" | tar -xz -C /tmp \
     && awk '/^P:qbittorrent-nox$/,/V:/' /tmp/APKINDEX | sed -n 2p | sed 's/^V://'); \
@@ -49,8 +54,6 @@ RUN \
     /root/.cache \
     /tmp/*
 
-# add local files
-COPY root/ /
 
 # add unrar
 COPY --from=unrar /usr/bin/unrar-alpine /usr/bin/unrar
@@ -59,3 +62,5 @@ COPY --from=unrar /usr/bin/unrar-alpine /usr/bin/unrar
 EXPOSE 8080 6881 6881/udp
 
 VOLUME /config
+
+ENTRYPOINT ["/runentry.sh"]
