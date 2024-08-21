@@ -13,11 +13,13 @@ DNS = $DNS
 
 [Peer]
 PublicKey = $SERVER_PUBKEY
-AllowedIPs = 0.0.0.0/0, ::/0, !127.0.0.1/32
+AllowedIPs = ::/0, 0.0.0.0/0
 Endpoint = $ENDPOINT
 PersistentKeepalive = 25
 EOF
 
+# AllowedIPs = 0.0.0.0/0, ::/0
+# exclude localhost from proxy
 wg-quick up wg0
 
 # Run qbittorrent-nox
